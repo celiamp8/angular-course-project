@@ -1,5 +1,4 @@
 import { Component, Input } from '@angular/core';
-import { TouchSequence } from 'selenium-webdriver';
 
 @Component({
   selector: 'app-root',
@@ -8,7 +7,7 @@ import { TouchSequence } from 'selenium-webdriver';
 })
 export class AppComponent {
 
-  @Input() appSection = '';
+  @Input() appSection = 'recipes';
 
   showSection(section: string) {
     this.appSection = section;
