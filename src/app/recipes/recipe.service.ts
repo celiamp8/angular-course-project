@@ -1,9 +1,11 @@
 import { Recipe } from './recipe.model';
 import { EventEmitter } from '@angular/core';
 import { Ingredient } from '../shared/ingredient.model';
+import { ShoppingListService } from '../shopping-list/shopping-list.service';
 
 export class RecipeService {
   recipeSelected = new EventEmitter<Recipe>();
+  slService = new ShoppingListService;
 
   private recipes: Recipe[] = [
     new Recipe(
@@ -25,6 +27,18 @@ export class RecipeService {
 
   getRecipes() {
     return this.recipes.slice();
+  }
+
+  getRecipe(id: number) {
+    return this.recipes[id];
+  }
+
+  getRecipeId(recipe: Recipe) {
+    return this.recipes.indexOf(recipe);
+  }
+
+  addIngredientsToSL(ingredients: Ingredient[]) {
+    this.slService.addIngredients(ingredients);
   }
 
 }
