@@ -4,33 +4,46 @@ import { map } from 'rxjs/operators';
 
 import { RecipeService } from '../recipes/recipe.service';
 import { Recipe } from '../recipes/recipe.model';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class DataStorageService {
-
-  constructor(private http: Http,
-    private recipeService: RecipeService) {
-  }
+  constructor(
+    private http: Http,
+    private recipeService: RecipeService,
+    private authService: AuthService
+  ) {}
 
   storeRecipes() {
-    return this.http.put('https://angular-course-practice.firebaseio.com/recipes.json',
-      this.recipeService.getRecipes(),
+    const token = this.authService.getToken();
+
+    return this.http.put(
+      'https://angular-course-practice.firebaseio.com/recipes.json?auth=' +
+        token,
+      this.recipeService.getRecipes()
     );
   }
 
   getRecipes() {
-    return this.http.get('https://angular-course-practice.firebaseio.com/recipes.json')
-      .pipe(map((response: Response) => {
-        const recipes: Recipe[] = response.json();
-        for (const recipe of recipes) {
-          if (!recipe['ingredients']) {
-            recipe['ingredients'] = [];
+    const token = this.authService.getToken();
+    return this.http
+      .get(
+        'https://angular-course-practice.firebaseio.com/recipes.json?auth=' +
+          token
+      )
+      .pipe(
+        map((response: Response) => {
+          const recipes: Recipe[] = response.json();
+          for (const recipe of recipes) {
+            if (!recipe['ingredients']) {
+              recipe['ingredients'] = [];
+            }
           }
-        }
-        return recipes;
-      })).subscribe((recipes: Recipe[]) => {
+          return recipes;
+        })
+      )
+      .subscribe((recipes: Recipe[]) => {
         this.recipeService.setRecipes(recipes);
       });
   }
-
 }
