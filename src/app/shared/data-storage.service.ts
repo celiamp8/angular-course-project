@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service';
@@ -17,9 +17,12 @@ export class DataStorageService {
     const token = this.authService.getToken();
 
     return this.httpClient.put(
-      'https://angular-course-practice.firebaseio.com/recipes.json?auth=' +
-        token,
-      this.recipeService.getRecipes()
+      'https://angular-course-practice.firebaseio.com/recipes.json' + token,
+      this.recipeService.getRecipes(),
+      {
+        observe: 'body',
+        params: new HttpParams().set('auth', token)
+      }
     );
   }
 
